@@ -2,7 +2,7 @@ version: "3.3"
 
 services:
   openfire:
-    image: openfire:mything
+    image: ghcr.io/pojiro/openfire:4.7.4
     ports:
       - "5222:5222"
       - "9090:9090"

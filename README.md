@@ -14,8 +14,11 @@ cd Openfire
 git checkout v4.7.4
 chmod u+x mvnw
 ./mvnw verify
-docker build . -t openfire:mything
+docker build . -t openfire:4.7.4
 ```
+
+this images is pushed to ghcr.io, as `ghcr.io/pojiro/openfire:4.7.4`.
+docker compose uses it.
 
 ### start server
 
