@@ -8,8 +8,6 @@ services:
       - "9090:9090"
     volumes:
       - openfire-data:/var/lib/openfire
-    stdin_open: true
-    tty: true
     depends_on:
       - postgres
 
