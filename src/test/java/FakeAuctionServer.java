@@ -56,7 +56,7 @@ public class FakeAuctionServer {
     }
 
     public void announceClosed() throws SmackException.NotConnectedException, InterruptedException {
-        currentChat.send(StanzaBuilder.buildMessage().build());
+        currentChat.send("");
     }
 
     public void stop() {
