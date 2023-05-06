@@ -25,3 +25,11 @@ docker compose up
 ```
 
 open browser http://localhost:9090, then setup server setting
+
+## Window Licker
+
+copy windowlicker-core-DEV.jar and windowlicker-swing-DEV.jar from https://github.com/tomykaira/auctionSniper/tree/new/lib/develop to lib/
+
+### suppress keyboard layout error
+
+use `-Dcom.objogate.wl.keyboard=US`, this property is read from windowlicker
