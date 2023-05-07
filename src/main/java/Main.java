@@ -1,3 +1,5 @@
+import auctionsniper.AuctionEventListener;
+import auctionsniper.AuctionMessageTranslator;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
@@ -13,7 +15,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 
-public class Main {
+public class Main implements AuctionEventListener {
     private static final int ARG_HOSTNAME = 0;
     private static final int ARG_USERNAME = 1;
     private static final int ARG_PASSWORD = 2;
@@ -66,9 +68,7 @@ public class Main {
     private void joinAuction(XMPPTCPConnection connection, String itemId) throws XmppStringprepException, SmackException.NotConnectedException, InterruptedException {
         disconnectWhenUICloses(connection);
         var chatManager = ChatManager.getInstanceFor(connection);
-        chatManager.addIncomingListener((entityBareJid, message, chat) -> {
-            SwingUtilities.invokeLater(() -> ui.showStatus(MainWindow.STATUS_LOST));
-        });
+        chatManager.addIncomingListener(new AuctionMessageTranslator(this));
         var auctionJid = JidCreate.entityBareFrom(auctionId(itemId, connection));
         var chat = chatManager.chatWith(auctionJid);
         chat.send(JOIN_COMMAND_FORMAT);
@@ -82,5 +82,10 @@ public class Main {
                 super.windowClosed(e);
             }
         });
+    }
+
+    @Override
+    public void auctionClosed() {
+        SwingUtilities.invokeLater(() -> ui.showStatus(MainWindow.STATUS_LOST));
     }
 }
