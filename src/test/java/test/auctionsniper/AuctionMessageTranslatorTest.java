@@ -1,6 +1,7 @@
 package test.auctionsniper;
 
 import auctionsniper.AuctionEventListener;
+import auctionsniper.AuctionEventListener.PriceSource;
 import auctionsniper.AuctionMessageTranslator;
 import org.jivesoftware.smack.chat2.Chat;
 import org.jivesoftware.smack.packet.StanzaBuilder;
@@ -14,7 +15,7 @@ public class AuctionMessageTranslatorTest {
     @RegisterExtension
     JUnit5Mockery context = new JUnit5Mockery();
     private final AuctionEventListener listener = context.mock(AuctionEventListener.class);
-    private final AuctionMessageTranslator translator = new AuctionMessageTranslator(listener);
+    private final AuctionMessageTranslator translator = new AuctionMessageTranslator("SNIPER_ID", listener);
     public static final Chat UNUSED_CHAT = null;
     public static final EntityBareJid UNUSED_ENTITY_BARE_JID = null;
 
@@ -32,9 +33,9 @@ public class AuctionMessageTranslatorTest {
     }
 
     @Test
-    public void notifiesBidDetailsWhenCurrentPriceMessageReceived() {
+    public void notifiesBidDetailsWhenCurrentPriceMessageReceivedFromOtherBidder() {
         context.checking(new Expectations() {{
-            exactly(1).of(listener).currentPrice(192, 7);
+            exactly(1).of(listener).currentPrice(192, 7, PriceSource.FromOtherBidder);
         }});
 
         var message = StanzaBuilder.buildMessage()
@@ -43,4 +44,6 @@ public class AuctionMessageTranslatorTest {
 
         translator.newIncomingMessage(UNUSED_ENTITY_BARE_JID, message, UNUSED_CHAT);
     }
+
+
 }
