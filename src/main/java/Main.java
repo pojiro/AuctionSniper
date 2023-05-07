@@ -72,7 +72,7 @@ public class Main {
         chatManager.addIncomingListener(
                 new AuctionMessageTranslator(
                         connection.getUser().asEntityBareJid().toString(),
-                        new AuctionSniper(auction, new SniperStateDisplayer())
+                        new AuctionSniper(auction, new SniperStateDisplayer(), itemId)
                 ));
         auction.join();
     }
@@ -99,7 +99,7 @@ public class Main {
         }
 
         @Override
-        public void sniperBidding() {
+        public void sniperBidding(SniperState sniperState) {
             showStatus(MainWindow.STATUS_BIDDING);
         }
 
