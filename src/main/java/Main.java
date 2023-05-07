@@ -69,7 +69,11 @@ public class Main {
         var auctionJid = JidCreate.entityBareFrom(auctionId(itemId, connection));
         var chat = chatManager.chatWith(auctionJid);
         var auction = new XMPPAuction(chat);
-        chatManager.addIncomingListener(new AuctionMessageTranslator(connection.getUser().toString(), new AuctionSniper(auction, new SniperStateDisplayer())));
+        chatManager.addIncomingListener(
+                new AuctionMessageTranslator(
+                        connection.getUser().asEntityBareJid().toString(),
+                        new AuctionSniper(auction, new SniperStateDisplayer())
+                ));
         auction.join();
     }
 
