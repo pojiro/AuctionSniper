@@ -1,5 +1,6 @@
-import auctionsniper.AuctionEventListener;
 import auctionsniper.AuctionMessageTranslator;
+import auctionsniper.AuctionSniper;
+import auctionsniper.SniperListener;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
@@ -15,7 +16,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 
-public class Main implements AuctionEventListener {
+public class Main implements SniperListener {
     private static final int ARG_HOSTNAME = 0;
     private static final int ARG_USERNAME = 1;
     private static final int ARG_PASSWORD = 2;
@@ -68,7 +69,7 @@ public class Main implements AuctionEventListener {
     private void joinAuction(XMPPTCPConnection connection, String itemId) throws XmppStringprepException, SmackException.NotConnectedException, InterruptedException {
         disconnectWhenUICloses(connection);
         var chatManager = ChatManager.getInstanceFor(connection);
-        chatManager.addIncomingListener(new AuctionMessageTranslator(this));
+        chatManager.addIncomingListener(new AuctionMessageTranslator(new AuctionSniper(this)));
         var auctionJid = JidCreate.entityBareFrom(auctionId(itemId, connection));
         var chat = chatManager.chatWith(auctionJid);
         chat.send(JOIN_COMMAND_FORMAT);
@@ -85,11 +86,7 @@ public class Main implements AuctionEventListener {
     }
 
     @Override
-    public void auctionClosed() {
+    public void sniperLost() {
         SwingUtilities.invokeLater(() -> ui.showStatus(MainWindow.STATUS_LOST));
-    }
-
-    @Override
-    public void currentPrice(int price, int increment) {
     }
 }
