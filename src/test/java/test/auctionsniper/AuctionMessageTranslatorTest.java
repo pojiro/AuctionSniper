@@ -30,4 +30,17 @@ public class AuctionMessageTranslatorTest {
 
         translator.newIncomingMessage(UNUSED_ENTITY_BARE_JID, message, UNUSED_CHAT);
     }
+
+    @Test
+    public void notifiesBidDetailsWhenCurrentPriceMessageReceived() {
+        context.checking(new Expectations() {{
+            exactly(1).of(listener).currentPrice(192, 7);
+        }});
+
+        var message = StanzaBuilder.buildMessage()
+                .setBody("SOLVersion: 1.1; Event: PRICE; CurrentPrice: 192; Increment: 7; Bidder: Someone else;")
+                .build();
+
+        translator.newIncomingMessage(UNUSED_ENTITY_BARE_JID, message, UNUSED_CHAT);
+    }
 }

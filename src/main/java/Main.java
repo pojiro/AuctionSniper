@@ -88,4 +88,8 @@ public class Main implements AuctionEventListener {
     public void auctionClosed() {
         SwingUtilities.invokeLater(() -> ui.showStatus(MainWindow.STATUS_LOST));
     }
+
+    @Override
+    public void currentPrice(int price, int increment) {
+    }
 }

@@ -70,7 +70,7 @@ public class FakeAuctionServer {
     }
 
     public void announceClosed() throws SmackException.NotConnectedException, InterruptedException {
-        currentChat.send("");
+        currentChat.send("SOLVersion: 1.1; Event: CLOSE;");
     }
 
     public void stop() {
