@@ -1,7 +1,4 @@
-import auctionsniper.Auction;
-import auctionsniper.AuctionMessageTranslator;
-import auctionsniper.AuctionSniper;
-import auctionsniper.SniperListener;
+import auctionsniper.*;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
@@ -26,8 +23,6 @@ public class Main implements SniperListener {
     private static final String ITEM_ID_AS_LOGIN = "auction-%s";
     private static final String AUCTION_ID_FORMAT = ITEM_ID_AS_LOGIN + "@%s/" + AUCTION_RESOURCE;
     private MainWindow ui;
-    public static final String JOIN_COMMAND_FORMAT = "SOLVersion: 1.1; Command: JOIN;";
-    public static final String BID_COMMAND_FORMAT = "SOLVersion: 1.1; Command: BID; Price: %d;";
 
     public Main() throws Exception {
         startUserInterface();
@@ -73,18 +68,9 @@ public class Main implements SniperListener {
         var chatManager = ChatManager.getInstanceFor(connection);
         var auctionJid = JidCreate.entityBareFrom(auctionId(itemId, connection));
         var chat = chatManager.chatWith(auctionJid);
-        var auction = new Auction() {
-            @Override
-            public void bid(int amount) {
-                try {
-                    chat.send(String.format(BID_COMMAND_FORMAT, amount));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        };
+        var auction = new XMPPAuction(chat);
         chatManager.addIncomingListener(new AuctionMessageTranslator(new AuctionSniper(auction, this)));
-        chat.send(JOIN_COMMAND_FORMAT);
+        auction.join();
     }
 
     private void disconnectWhenUICloses(XMPPTCPConnection connection) {
