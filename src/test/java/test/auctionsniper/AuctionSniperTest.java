@@ -16,7 +16,7 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 
 import static org.hamcrest.Matchers.equalTo;
 
-public class AuctionSnipterTest {
+public class AuctionSniperTest {
     @RegisterExtension
     JUnit5Mockery context = new JUnit5Mockery();
     private final Auction auction = context.mock(Auction.class);
