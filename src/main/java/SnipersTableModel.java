@@ -1,11 +1,11 @@
-import auctionsniper.SniperState;
+import auctionsniper.SniperSnapshot;
 
 import javax.swing.table.AbstractTableModel;
 
 public class SnipersTableModel extends AbstractTableModel {
-    private static final SniperState STARTING_UP = new SniperState("", 0, 0);
+    private static final SniperSnapshot STARTING_UP = new SniperSnapshot("", 0, 0);
     private String statusText = MainWindow.STATUS_JOINING;
-    private SniperState sniperState = STARTING_UP;
+    private SniperSnapshot sniperSnapshot = STARTING_UP;
 
     @Override
     public int getRowCount() {
@@ -21,11 +21,11 @@ public class SnipersTableModel extends AbstractTableModel {
     public Object getValueAt(int rowIndex, int columnIndex) {
         switch (Column.at(columnIndex)) {
             case ITEM_IDENTIFIER:
-                return sniperState.itemId;
+                return sniperSnapshot.itemId;
             case LAST_PRICE:
-                return sniperState.lastPrice;
+                return sniperSnapshot.lastPrice;
             case LAST_BID:
-                return sniperState.lastBid;
+                return sniperSnapshot.lastBid;
             case SNIPER_STATUS:
                 return statusText;
             default:
@@ -33,8 +33,8 @@ public class SnipersTableModel extends AbstractTableModel {
         }
     }
 
-    public void sniperStatusChanged(SniperState newSniperState, String newStatusText) {
-        sniperState = newSniperState;
+    public void sniperStatusChanged(SniperSnapshot newSniperSnapshot, String newStatusText) {
+        sniperSnapshot = newSniperSnapshot;
         statusText = newStatusText;
         fireTableRowsUpdated(0, 0);
     }

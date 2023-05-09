@@ -4,7 +4,7 @@ import auctionsniper.Auction;
 import auctionsniper.AuctionEventListener.PriceSource;
 import auctionsniper.AuctionSniper;
 import auctionsniper.SniperListener;
-import auctionsniper.SniperState;
+import auctionsniper.SniperSnapshot;
 import org.jmock.Expectations;
 import org.jmock.States;
 import org.jmock.junit5.JUnit5Mockery;
@@ -37,7 +37,7 @@ public class AuctionSnipterTest {
 
         context.checking(new Expectations() {{
             one(auction).bid(bid);
-            atLeast(1).of(sniperListener).sniperBidding(with(equal(new SniperState(ITEM_ID, price, bid))));
+            atLeast(1).of(sniperListener).sniperBidding(with(equal(new SniperSnapshot(ITEM_ID, price, bid))));
         }});
 
         sniper.currentPrice(price, increment, PriceSource.FromOtherBidder);
@@ -66,7 +66,7 @@ public class AuctionSnipterTest {
         context.checking(new Expectations() {{
             ignoring(auction);
 
-            allowing(sniperListener).sniperBidding(with(any(SniperState.class)));
+            allowing(sniperListener).sniperBidding(with(any(SniperSnapshot.class)));
             then(sniperState.is("bidding"));
 
             atLeast(1).of(sniperListener).sniperLost();

@@ -99,8 +99,8 @@ public class Main {
         }
 
         @Override
-        public void sniperBidding(SniperState sniperState) {
-            SwingUtilities.invokeLater(() -> ui.sniperStatusChanged(sniperState, MainWindow.STATUS_BIDDING));
+        public void sniperBidding(SniperSnapshot sniperSnapshot) {
+            SwingUtilities.invokeLater(() -> ui.sniperStatusChanged(sniperSnapshot, MainWindow.STATUS_BIDDING));
         }
 
         @Override
