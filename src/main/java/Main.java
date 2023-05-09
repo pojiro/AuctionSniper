@@ -103,11 +103,6 @@ public class Main {
             SwingUtilities.invokeLater(() -> ui.sniperStatusChanged(sniperSnapshot));
         }
 
-        @Override
-        public void sniperWinning() {
-            showStatus(MainWindow.STATUS_WINNING);
-        }
-
         private void showStatus(String status) {
             SwingUtilities.invokeLater(() -> ui.showStatusText(status));
         }

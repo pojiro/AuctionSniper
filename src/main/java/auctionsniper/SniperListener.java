@@ -8,6 +8,4 @@ public interface SniperListener extends EventListener {
     void sniperWon();
 
     void sniperStateChanged(SniperSnapshot sniperSnapshot);
-
-    void sniperWinning();
 }
