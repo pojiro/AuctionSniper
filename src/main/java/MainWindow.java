@@ -1,17 +1,14 @@
-import auctionsniper.SniperSnapshot;
-
 import javax.swing.*;
 import java.awt.*;
 
 public class MainWindow extends JFrame {
     public static final String MAIN_WINDOW_NAME = "Auction Sniper Main";
     public static final String SNIPERS_TABLE_NAME = "snipers table";
-    private final SnipersTableModel snipers = new SnipersTableModel();
 
-    public MainWindow() {
+    public MainWindow(SnipersTableModel snipersTableModel) {
         super("Auction Sniper");
         setName(MAIN_WINDOW_NAME);
-        fillContentPane(makeSnipersTable());
+        fillContentPane(makeSnipersTable(snipersTableModel));
         pack();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
@@ -23,13 +20,9 @@ public class MainWindow extends JFrame {
         contentPane.add(new JScrollPane(snipersTable), BorderLayout.CENTER);
     }
 
-    private JTable makeSnipersTable() {
-        JTable snipersTable = new JTable(snipers);
+    private JTable makeSnipersTable(SnipersTableModel snipersTableModel) {
+        JTable snipersTable = new JTable(snipersTableModel);
         snipersTable.setName(SNIPERS_TABLE_NAME);
         return snipersTable;
-    }
-
-    public void sniperStatusChanged(SniperSnapshot sniperSnapshot) {
-        snipers.sniperStatusChanged(sniperSnapshot);
     }
 }

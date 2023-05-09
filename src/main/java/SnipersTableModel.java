@@ -1,9 +1,10 @@
+import auctionsniper.SniperListener;
 import auctionsniper.SniperSnapshot;
 import auctionsniper.SniperSnapshot.SniperState;
 
 import javax.swing.table.AbstractTableModel;
 
-public class SnipersTableModel extends AbstractTableModel {
+public class SnipersTableModel extends AbstractTableModel implements SniperListener {
     private static final SniperSnapshot STARTING_UP = SniperSnapshot.joining("");
     private SniperSnapshot sniperSnapshot = STARTING_UP;
 
@@ -24,7 +25,8 @@ public class SnipersTableModel extends AbstractTableModel {
 
     private final static String[] STATUS_TEXT = {"Joining", "Bidding", "Winning", "Lost", "Won"};
 
-    public void sniperStatusChanged(SniperSnapshot newSniperSnapshot) {
+    @Override
+    public void sniperStateChanged(SniperSnapshot newSniperSnapshot) {
         sniperSnapshot = newSniperSnapshot;
         fireTableRowsUpdated(0, 0);
     }
