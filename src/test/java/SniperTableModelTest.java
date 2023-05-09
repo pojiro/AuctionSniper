@@ -1,4 +1,5 @@
 import auctionsniper.SniperSnapshot;
+import auctionsniper.SniperSnapshot.SniperState;
 import org.hamcrest.Matcher;
 import org.jmock.Expectations;
 import org.jmock.junit5.JUnit5Mockery;
@@ -36,7 +37,7 @@ public class SniperTableModelTest {
             one(listener).tableChanged(with(aRowChangedEvent()));
         }});
 
-        model.sniperStatusChanged(new SniperSnapshot("item id", 555, 666), MainWindow.STATUS_BIDDING);
+        model.sniperStatusChanged(new SniperSnapshot("item id", 555, 666, SniperState.BIDDING));
 
         assertColumnEquals(SnipersTableModel.Column.ITEM_IDENTIFIER, "item id");
         assertColumnEquals(SnipersTableModel.Column.LAST_PRICE, 555);

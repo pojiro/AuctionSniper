@@ -1,5 +1,7 @@
 package auctionsniper;
 
+import auctionsniper.SniperSnapshot.SniperState;
+
 public class AuctionSniper implements AuctionEventListener {
     private boolean isWinning = false;
     private final Auction auction;
@@ -30,7 +32,7 @@ public class AuctionSniper implements AuctionEventListener {
         } else {
             int bid = price + increment;
             auction.bid(bid);
-            sniperListener.sniperBidding(new SniperSnapshot(itemId, price, bid));
+            sniperListener.sniperStateChanged(new SniperSnapshot(itemId, price, bid, SniperState.BIDDING));
         }
     }
 }
