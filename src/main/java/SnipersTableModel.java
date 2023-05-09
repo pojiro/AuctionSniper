@@ -35,28 +35,38 @@ public class SnipersTableModel extends AbstractTableModel implements SniperListe
         return STATUS_TEXT[sniperState.ordinal()];
     }
 
+    @Override
+    public String getColumnName(int column) {
+        return Column.at(column).name;
+    }
+
     public enum Column {
-        ITEM_IDENTIFIER {
+        ITEM_IDENTIFIER("Item") {
             @Override
             public Object valueIn(SniperSnapshot sniperSnapshot) {
                 return sniperSnapshot.itemId;
             }
-        }, LAST_PRICE {
+        }, LAST_PRICE("Last Price") {
             @Override
             public Object valueIn(SniperSnapshot sniperSnapshot) {
                 return sniperSnapshot.lastPrice;
             }
-        }, LAST_BID {
+        }, LAST_BID("Last Bid") {
             @Override
             public Object valueIn(SniperSnapshot sniperSnapshot) {
                 return sniperSnapshot.lastBid;
             }
-        }, SNIPER_STATE {
+        }, SNIPER_STATE("State") {
             @Override
             public Object valueIn(SniperSnapshot sniperSnapshot) {
                 return textFor(sniperSnapshot.state);
             }
         };
+        public final String name;
+
+        private Column(String name) {
+            this.name = name;
+        }
 
         abstract public Object valueIn(SniperSnapshot sniperSnapshot);
 

@@ -38,11 +38,17 @@ public class SniperTableModelTest {
         }});
 
         model.sniperStateChanged(new SniperSnapshot("item id", 555, 666, SniperState.BIDDING));
-
         assertColumnEquals(SnipersTableModel.Column.ITEM_IDENTIFIER, "item id");
         assertColumnEquals(SnipersTableModel.Column.LAST_PRICE, 555);
         assertColumnEquals(SnipersTableModel.Column.LAST_BID, 666);
         assertColumnEquals(SnipersTableModel.Column.SNIPER_STATE, SnipersTableModel.textFor(SniperState.BIDDING));
+    }
+
+    @Test
+    public void setsUpColumnHeadings() {
+        for (var column : SnipersTableModel.Column.values()) {
+            assertEquals(column.name, model.getColumnName(column.ordinal()));
+        }
     }
 
     private void assertColumnEquals(SnipersTableModel.Column column, Object expected) {
