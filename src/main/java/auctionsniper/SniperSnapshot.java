@@ -1,14 +1,35 @@
 package auctionsniper;
 
+import com.objogate.exception.Defect;
+
 import java.util.Objects;
 
 public class SniperSnapshot {
     public enum SniperState {
-        JOINING,
-        BIDDING,
-        WINNING,
+        JOINING {
+            @Override
+            public SniperState whenAuctionClosed() {
+                return LOST;
+            }
+        },
+        BIDDING {
+            @Override
+            public SniperState whenAuctionClosed() {
+                return LOST;
+            }
+        },
+        WINNING {
+            @Override
+            public SniperState whenAuctionClosed() {
+                return WON;
+            }
+        },
         LOST,
-        WON
+        WON;
+
+        public SniperState whenAuctionClosed() {
+            throw new Defect("Auction is already closed");
+        }
     }
 
     public final String itemId;
@@ -33,6 +54,10 @@ public class SniperSnapshot {
 
     public static SniperSnapshot joining(String itemId) {
         return new SniperSnapshot(itemId, 0, 0, SniperState.JOINING);
+    }
+
+    public SniperSnapshot closed() {
+        return new SniperSnapshot(itemId, lastPrice, lastBid, state.whenAuctionClosed());
     }
 
     @Override

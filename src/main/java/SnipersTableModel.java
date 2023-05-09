@@ -34,7 +34,13 @@ public class SnipersTableModel extends AbstractTableModel {
         }
     }
 
-    private static String[] STATUS_TEXT = {MainWindow.STATUS_JOINING, MainWindow.STATUS_BIDDING, MainWindow.STATUS_WINNING};
+    private static String[] STATUS_TEXT = {
+            MainWindow.STATUS_JOINING,
+            MainWindow.STATUS_BIDDING,
+            MainWindow.STATUS_WINNING,
+            MainWindow.STATUS_LOST,
+            MainWindow.STATUS_WON
+    };
 
     public void sniperStatusChanged(SniperSnapshot newSniperSnapshot) {
         sniperSnapshot = newSniperSnapshot;
