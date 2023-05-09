@@ -13,10 +13,6 @@ public class AuctionSniperDriver extends JFrameDriver {
         super(new GesturePerformer(), JFrameDriver.topLevelFrame(named(MainWindow.MAIN_WINDOW_NAME), showingOnScreen()), new AWTEventQueueProber(timeoutMillis, 100));
     }
 
-    public void showsSniperStatus(String statusText) {
-        new JTableDriver(this).hasCell(withLabelText(equalTo(statusText)));
-    }
-
     public void showsSniperStatus(String itemId, int lastPrice, int lastBid, String statusText) {
         var table = new JTableDriver(this);
         table.hasRow(matching(
