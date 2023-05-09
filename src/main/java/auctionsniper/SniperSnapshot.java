@@ -43,6 +43,7 @@ public class SniperSnapshot {
         SniperSnapshot sniperSnapshot = (SniperSnapshot) obj;
         return Objects.equals(sniperSnapshot.itemId, this.itemId)
                 && sniperSnapshot.lastPrice == this.lastPrice
-                && sniperSnapshot.lastBid == this.lastBid;
+                && sniperSnapshot.lastBid == this.lastBid
+                && sniperSnapshot.state == this.state;
     }
 }
