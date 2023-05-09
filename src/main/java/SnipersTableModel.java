@@ -26,7 +26,7 @@ public class SnipersTableModel extends AbstractTableModel {
                 return sniperSnapshot.lastPrice;
             case LAST_BID:
                 return sniperSnapshot.lastBid;
-            case SNIPER_STATUS:
+            case SNIPER_STATE:
                 return statusText;
             default:
                 throw new IllegalArgumentException("No column at " + columnIndex);
@@ -45,7 +45,7 @@ public class SnipersTableModel extends AbstractTableModel {
     }
 
     public enum Column {
-        ITEM_IDENTIFIER, LAST_PRICE, LAST_BID, SNIPER_STATUS;
+        ITEM_IDENTIFIER, LAST_PRICE, LAST_BID, SNIPER_STATE;
 
         public static Column at(int offset) {
             return values()[offset];
