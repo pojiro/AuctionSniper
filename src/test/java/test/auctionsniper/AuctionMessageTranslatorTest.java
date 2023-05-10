@@ -10,14 +10,21 @@ import org.jmock.junit5.JUnit5Mockery;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.jxmpp.jid.EntityBareJid;
+import org.jxmpp.jid.impl.JidCreate;
+import org.jxmpp.stringprep.XmppStringprepException;
 
 public class AuctionMessageTranslatorTest {
     @RegisterExtension
     JUnit5Mockery context = new JUnit5Mockery();
     private final AuctionEventListener listener = context.mock(AuctionEventListener.class);
-    private final AuctionMessageTranslator translator = new AuctionMessageTranslator("SNIPER_ID", listener);
+    private final AuctionMessageTranslator translator;
     public static final Chat UNUSED_CHAT = null;
-    public static final EntityBareJid UNUSED_ENTITY_BARE_JID = null;
+    public final EntityBareJid AUCTION_BARE_JID;
+
+    public AuctionMessageTranslatorTest() throws XmppStringprepException {
+        this.AUCTION_BARE_JID = JidCreate.entityBareFrom("auction@localhost");
+        this.translator = new AuctionMessageTranslator(JidCreate.entityBareFrom("sniper@localhost"), AUCTION_BARE_JID, listener);
+    }
 
     @Test
     public void notifiesAuctionClosedWhenCloseMessageReceived() {
@@ -29,7 +36,7 @@ public class AuctionMessageTranslatorTest {
                 .setBody("SOLVersion: 1.1; Event: CLOSE;")
                 .build();
 
-        translator.newIncomingMessage(UNUSED_ENTITY_BARE_JID, message, UNUSED_CHAT);
+        translator.newIncomingMessage(AUCTION_BARE_JID, message, UNUSED_CHAT);
     }
 
     @Test
@@ -42,7 +49,7 @@ public class AuctionMessageTranslatorTest {
                 .setBody("SOLVersion: 1.1; Event: PRICE; CurrentPrice: 192; Increment: 7; Bidder: Someone else;")
                 .build();
 
-        translator.newIncomingMessage(UNUSED_ENTITY_BARE_JID, message, UNUSED_CHAT);
+        translator.newIncomingMessage(AUCTION_BARE_JID, message, UNUSED_CHAT);
     }
 
 

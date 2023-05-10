@@ -10,22 +10,26 @@ import java.util.Map;
 
 public class AuctionMessageTranslator implements IncomingChatMessageListener {
     private final AuctionEventListener listener;
-    private final String sniperId;
+    private final EntityBareJid sniperJid;
+    private final EntityBareJid auctionJid;
 
-    public AuctionMessageTranslator(String sniperId, AuctionEventListener listener) {
-        this.sniperId = sniperId;
+    public AuctionMessageTranslator(EntityBareJid sniperJid, EntityBareJid auctionJid, AuctionEventListener listener) {
+        this.sniperJid = sniperJid;
         this.listener = listener;
+        this.auctionJid = auctionJid;
     }
 
     @Override
     public void newIncomingMessage(EntityBareJid entityBareJid, Message message, Chat chat) {
+        if (!entityBareJid.equals(auctionJid)) return;
+
         var event = AuctionEvent.from(message.getBody());
 
         var eventType = event.type();
         if ("CLOSE".equals(eventType)) {
             listener.auctionClosed();
         } else if ("PRICE".equals(eventType)) {
-            listener.currentPrice(event.currentPrice(), event.increment(), event.isFrom(sniperId));
+            listener.currentPrice(event.currentPrice(), event.increment(), event.isFrom(sniperJid.toString()));
         }
     }
 

@@ -13,6 +13,7 @@ import javax.swing.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 
 public class Main {
     private static final int ARG_HOSTNAME = 0;
@@ -68,17 +69,26 @@ public class Main {
         return String.format(AUCTION_ID_FORMAT, itemId, connection.getXMPPServiceDomain());
     }
 
-    private void joinAuction(XMPPTCPConnection connection, String itemId) throws XmppStringprepException, SmackException.NotConnectedException, InterruptedException {
-        var chatManager = ChatManager.getInstanceFor(connection);
+    private void joinAuction(XMPPTCPConnection connection, String itemId) throws XmppStringprepException, InterruptedException, InvocationTargetException {
+        safelyAddItemToModel(itemId);
+        var sniperJid = connection.getUser().asEntityBareJid();
         var auctionJid = JidCreate.entityBareFrom(auctionId(itemId, connection));
+        var chatManager = ChatManager.getInstanceFor(connection);
         var chat = chatManager.chatWith(auctionJid);
         var auction = new XMPPAuction(chat);
         chatManager.addIncomingListener(
                 new AuctionMessageTranslator(
-                        connection.getUser().asEntityBareJid().toString(),
+                        sniperJid,
+                        auctionJid,
                         new AuctionSniper(auction, new SwingThreadSniperListener(snipers), itemId)
                 ));
         auction.join();
+    }
+
+    private void safelyAddItemToModel(String itemId) throws InterruptedException, InvocationTargetException {
+        SwingUtilities.invokeAndWait(() -> {
+            snipers.addSniper(SniperSnapshot.joining(itemId));
+        });
     }
 
     private void disconnectWhenUICloses(XMPPTCPConnection connection) {

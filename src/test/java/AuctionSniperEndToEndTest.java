@@ -66,6 +66,7 @@ public class AuctionSniperEndToEndTest {
         auction.reportPrice(1000, 98, "other bidder");
         auction.hasReceivedBid(1098, ApplicationRunner.SNIPER_XMPP_ID);
 
+
         auction2.reportPrice(500, 21, "other bidder");
         auction2.hasReceivedBid(521, ApplicationRunner.SNIPER_XMPP_ID);
 

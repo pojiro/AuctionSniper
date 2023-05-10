@@ -23,9 +23,7 @@ public class ApplicationRunner {
         driver.hasTitle(MainWindow.APPLICATION_TITLE);
         driver.hasColumnTitles();
         for (var auction : auctions) {
-            // この時点では AuctionSniper が notifyChange を呼んでおらず、アプリケーション GUI に item id が表示されていない
-            // よって、第一位引数に auction.getItemId() を設定すると e2e が fail してしまう
-            driver.showsSniperStatus("", 0, 0, SnipersTableModel.textFor(SniperState.JOINING));
+            driver.showsSniperStatus(auction.getItemId(), 0, 0, SnipersTableModel.textFor(SniperState.JOINING));
         }
     }
 
