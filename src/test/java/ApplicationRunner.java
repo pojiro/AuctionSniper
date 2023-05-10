@@ -5,15 +5,13 @@ public class ApplicationRunner {
     public static final String SNIPER_PASSWORD = "sniper";
     public static final String SNIPER_XMPP_ID = String.format("%s@%s", SNIPER_ID, FakeAuctionServer.XMPP_HOSTNAME);
     private AuctionSniperDriver driver;
-    private String itemId;
 
-    public void startBiddingIn(final FakeAuctionServer auction) {
-        itemId = auction.getItemId();
+    public void startBiddingIn(final FakeAuctionServer... auctions) throws InterruptedException {
         Thread thread = new Thread("Test Application") {
             @Override
             public void run() {
                 try {
-                    Main.main(FakeAuctionServer.XMPP_HOSTNAME, SNIPER_ID, SNIPER_PASSWORD, auction.getItemId());
+                    Main.main(arguments(auctions));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -24,23 +22,40 @@ public class ApplicationRunner {
         driver = new AuctionSniperDriver(1000);
         driver.hasTitle(MainWindow.APPLICATION_TITLE);
         driver.hasColumnTitles();
-        driver.showsSniperStatus("", 0, 0, SnipersTableModel.textFor(SniperState.JOINING));
+        for (var auction : auctions) {
+            // この時点では AuctionSniper が notifyChange を呼んでおらず、アプリケーション GUI に item id が表示されていない
+            // よって、第一位引数に auction.getItemId() を設定すると e2e が fail してしまう
+            driver.showsSniperStatus("", 0, 0, SnipersTableModel.textFor(SniperState.JOINING));
+        }
     }
 
-    public void hasShownSniperIsBidding(int lastPrice, int lastBid) {
-        driver.showsSniperStatus(itemId, lastPrice, lastBid, SnipersTableModel.textFor(SniperState.BIDDING));
+    protected static String[] arguments(FakeAuctionServer... auctions) {
+        var arguments = new String[auctions.length + 3];
+        arguments[0] = FakeAuctionServer.XMPP_HOSTNAME;
+        arguments[1] = SNIPER_ID;
+        arguments[2] = SNIPER_PASSWORD;
+
+        for (int i = 0; i < auctions.length; i++) {
+            arguments[i + 3] = auctions[i].getItemId();
+        }
+
+        return arguments;
     }
 
-    public void hasShownSniperIsWinning(int winningBid) {
-        driver.showsSniperStatus(itemId, winningBid, winningBid, SnipersTableModel.textFor(SniperState.WINNING));
+    public void hasShownSniperIsBidding(FakeAuctionServer auction, int lastPrice, int lastBid) {
+        driver.showsSniperStatus(auction.getItemId(), lastPrice, lastBid, SnipersTableModel.textFor(SniperState.BIDDING));
     }
 
-    public void showsSniperHasLostAuction(int lastPrice, int lastBid) {
-        driver.showsSniperStatus(itemId, lastPrice, lastBid, SnipersTableModel.textFor(SniperState.LOST));
+    public void hasShownSniperIsWinning(FakeAuctionServer auction, int winningBid) {
+        driver.showsSniperStatus(auction.getItemId(), winningBid, winningBid, SnipersTableModel.textFor(SniperState.WINNING));
     }
 
-    public void showsSniperHasWonAuction(int lastPrice) {
-        driver.showsSniperStatus(itemId, lastPrice, lastPrice, SnipersTableModel.textFor(SniperState.WON));
+    public void showsSniperHasLostAuction(FakeAuctionServer auction, int lastPrice, int lastBid) {
+        driver.showsSniperStatus(auction.getItemId(), lastPrice, lastBid, SnipersTableModel.textFor(SniperState.LOST));
+    }
+
+    public void showsSniperHasWonAuction(FakeAuctionServer auction, int lastPrice) {
+        driver.showsSniperStatus(auction.getItemId(), lastPrice, lastPrice, SnipersTableModel.textFor(SniperState.WON));
     }
 
     public void stop() {
