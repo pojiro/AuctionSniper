@@ -31,7 +31,12 @@ public class Main {
 
     public static void main(String... args) throws Exception {
         Main main = new Main();
-        main.joinAuction(connection(args[ARG_HOSTNAME], args[ARG_USERNAME], args[ARG_PASSWORD]), args[ARG_ITEM_ID]);
+        var connection = connection(args[ARG_HOSTNAME], args[ARG_USERNAME], args[ARG_PASSWORD]);
+        main.disconnectWhenUICloses(connection);
+
+        for (int i = ARG_ITEM_ID; i < args.length; i++) {
+            main.joinAuction(connection, args[i]);
+        }
     }
 
     private void startUserInterface() throws Exception {
@@ -64,8 +69,6 @@ public class Main {
     }
 
     private void joinAuction(XMPPTCPConnection connection, String itemId) throws XmppStringprepException, SmackException.NotConnectedException, InterruptedException {
-        disconnectWhenUICloses(connection);
-
         var chatManager = ChatManager.getInstanceFor(connection);
         var auctionJid = JidCreate.entityBareFrom(auctionId(itemId, connection));
         var chat = chatManager.chatWith(auctionJid);
