@@ -29,6 +29,8 @@ docker compose up
 
 open browser http://localhost:9090, then setup server setting
 
+p.93 の「Openfire サーバーをセットアップする」を忘れずにやる
+
 ## Window Licker
 
 copy windowlicker-core-DEV.jar and windowlicker-swing-DEV.jar from https://github.com/tomykaira/auctionSniper/tree/new/lib/develop to lib/
