@@ -7,7 +7,6 @@ import javax.swing.table.JTableHeader;
 
 import static com.objogate.wl.swing.matcher.IterableComponentsMatcher.matching;
 import static com.objogate.wl.swing.matcher.JLabelTextMatcher.withLabelText;
-import static org.hamcrest.CoreMatchers.equalTo;
 import static java.lang.String.valueOf;
 
 public class AuctionSniperDriver extends JFrameDriver {
@@ -36,8 +35,11 @@ public class AuctionSniperDriver extends JFrameDriver {
     }
 
     public void startBiddingFor(String itemId) {
-        itemIdField().replaceAllText(itemId);
-        bidButton().click();
+        var itemIdField = itemIdField();
+        itemIdField.replaceAllText(itemId);
+
+        var button = bidButton();
+        button.click();
     }
 
     private JTextFieldDriver itemIdField() {
@@ -47,6 +49,6 @@ public class AuctionSniperDriver extends JFrameDriver {
     }
 
     private JButtonDriver bidButton() {
-        return new JButtonDriver(this, JButton.class, named(MainWindow.JOIN_BUTTON_NAME));
+        return new JButtonDriver(this, javax.swing.JButton.class, named(MainWindow.JOIN_BUTTON_NAME));
     }
 }

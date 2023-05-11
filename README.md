@@ -38,3 +38,9 @@ copy windowlicker-core-DEV.jar and windowlicker-swing-DEV.jar from https://githu
 ### suppress keyboard layout error
 
 use `-Dcom.objogate.wl.keyboard=US`, this property is read from windowlicker
+
+### JButtonDriver が button を find できない
+
+AuctionSniperDriver の bitButton が "Join Auction" button を見つけられない、原因不明。
+
+これができないため、 p.196 以降のトレースはできなかった。

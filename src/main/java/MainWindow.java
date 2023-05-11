@@ -1,5 +1,10 @@
+import auctionsniper.Announcer;
+import auctionsniper.UserRequestListener;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class MainWindow extends JFrame {
     public static final String APPLICATION_TITLE = "Auction Sniper";
@@ -7,6 +12,7 @@ public class MainWindow extends JFrame {
     public static final String SNIPERS_TABLE_NAME = "snipers table";
     public static final String NEW_ITEM_ID_NAME = "item id field";
     public static final String JOIN_BUTTON_NAME = "join button";
+    private final Announcer<UserRequestListener> userRequests = Announcer.to(UserRequestListener.class);
 
     public MainWindow(SnipersTableModel snipersTableModel) {
         super(APPLICATION_TITLE);
@@ -31,17 +37,27 @@ public class MainWindow extends JFrame {
     }
 
     private JPanel makeControls() {
-        var controls = new JPanel(new FlowLayout());
+        JPanel controls = new JPanel(new FlowLayout());
 
-        var itemIdField = new JTextField();
+        final JTextField itemIdField = new JTextField();
         itemIdField.setColumns(25);
         itemIdField.setName(NEW_ITEM_ID_NAME);
         controls.add(itemIdField);
 
-        var joinAuctionButton = new JButton("Join Auction");
+        javax.swing.JButton joinAuctionButton = new javax.swing.JButton("Join Auction");
         joinAuctionButton.setName(JOIN_BUTTON_NAME);
+        joinAuctionButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                userRequests.announce().joinAuction(itemIdField.getText());
+            }
+        });
         controls.add(joinAuctionButton);
 
         return controls;
+    }
+
+    public void addUserRequestListener(UserRequestListener userRequestListener) {
+        userRequests.addListener(userRequestListener);
     }
 }

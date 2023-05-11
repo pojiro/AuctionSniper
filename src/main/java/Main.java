@@ -7,7 +7,6 @@ import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
-import org.jxmpp.stringprep.XmppStringprepException;
 
 import javax.swing.*;
 import java.awt.event.WindowAdapter;
@@ -34,10 +33,7 @@ public class Main {
         Main main = new Main();
         var connection = connection(args[ARG_HOSTNAME], args[ARG_USERNAME], args[ARG_PASSWORD]);
         main.disconnectWhenUICloses(connection);
-
-        for (int i = ARG_ITEM_ID; i < args.length; i++) {
-            main.joinAuction(connection, args[i]);
-        }
+        main.addUserRequestListenerFor(connection);
     }
 
     private void startUserInterface() throws Exception {
@@ -69,22 +65,6 @@ public class Main {
         return String.format(AUCTION_ID_FORMAT, itemId, connection.getXMPPServiceDomain());
     }
 
-    private void joinAuction(XMPPTCPConnection connection, String itemId) throws XmppStringprepException, InterruptedException, InvocationTargetException {
-        safelyAddItemToModel(itemId);
-        var sniperJid = connection.getUser().asEntityBareJid();
-        var auctionJid = JidCreate.entityBareFrom(auctionId(itemId, connection));
-        var chatManager = ChatManager.getInstanceFor(connection);
-        var chat = chatManager.chatWith(auctionJid);
-        var auction = new XMPPAuction(chat);
-        chatManager.addIncomingListener(
-                new AuctionMessageTranslator(
-                        sniperJid,
-                        auctionJid,
-                        new AuctionSniper(auction, new SwingThreadSniperListener(snipers), itemId)
-                ));
-        auction.join();
-    }
-
     private void safelyAddItemToModel(String itemId) throws InterruptedException, InvocationTargetException {
         SwingUtilities.invokeAndWait(() -> {
             snipers.addSniper(SniperSnapshot.joining(itemId));
@@ -97,6 +77,27 @@ public class Main {
             public void windowClosed(WindowEvent e) {
                 connection.disconnect();
                 super.windowClosed(e);
+            }
+        });
+    }
+
+    private void addUserRequestListenerFor(final XMPPTCPConnection connection) {
+        ui.addUserRequestListener(new UserRequestListener() {
+            @Override
+            public void joinAuction(String itemId) {
+                snipers.addSniper(SniperSnapshot.joining(itemId));
+                var sniperJid = connection.getUser().asEntityBareJid();
+                var auctionJid = JidCreate.entityBareFromOrNull(auctionId(itemId, connection));
+                var chatManager = ChatManager.getInstanceFor(connection);
+                var chat = chatManager.chatWith(auctionJid);
+                var auction = new XMPPAuction(chat);
+                chatManager.addIncomingListener(
+                        new AuctionMessageTranslator(
+                                sniperJid,
+                                auctionJid,
+                                new AuctionSniper(auction, new SwingThreadSniperListener(snipers), itemId)
+                        ));
+                auction.join();
             }
         });
     }
